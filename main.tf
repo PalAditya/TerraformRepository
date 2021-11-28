@@ -4,8 +4,8 @@ resource "aws_ecs_cluster" "mongo_ecs" {
   tags = var.tags
 }
 
-resource "aws_ecs_task_definition" "kafka-task" {
-  container_definitions    = data.template_file.container_definition_kafka.rendered
+resource "aws_ecs_task_definition" "zk-task" {
+  container_definitions    = data.template_file.container_definition_zk.rendered
   family                   = var.name
   network_mode             = "host"
   requires_compatibilities = ["EC2"]
@@ -19,12 +19,19 @@ resource "aws_ecs_task_definition" "kafka-task" {
     name = "zklog"
     host_path = "/vol2/zk-txn-logs"
   }
-#
-#  volume {
-#    name = "kafka"
-#    host_path = "/vol3/kafka-data"
-#  }
+  tags = var.tags
+}
 
+resource "aws_ecs_task_definition" "kafka-task" {
+  container_definitions    = data.template_file.container_definition_kafka.rendered
+  family                   = var.name
+  network_mode             = "host"
+  requires_compatibilities = ["EC2"]
+
+  volume {
+    name = "kafka"
+    host_path = "/vol3/kafka-data"
+  }
   tags = var.tags
 }
 
@@ -104,6 +111,16 @@ resource "aws_cloudwatch_log_group" "logs" {
 #  launch_type                        = "EC2"
 #}
 
+resource "aws_ecs_service" "zk-ecs-service" {
+  name                               = "zk"
+  cluster                            = aws_ecs_cluster.mongo_ecs.arn
+  task_definition                    = aws_ecs_task_definition.zk-task.arn
+  desired_count                      = 1
+  deployment_minimum_healthy_percent = 0
+  deployment_maximum_percent         = 100
+  launch_type                        = "EC2"
+}
+
 resource "aws_ecs_service" "kafka-ecs-service" {
   name                               = "kafka"
   cluster                            = aws_ecs_cluster.mongo_ecs.arn
@@ -135,8 +152,12 @@ resource "aws_ecs_service" "kafka-ecs-service" {
 #  }
 #}
 
-data "template_file" "container_definition_kafka" {
+data "template_file" "container_definition_zk" {
   template = file("${path.module}/container-definitions/zookeeper.tpl")
+}
+
+data "template_file" "container_definition_kafka" {
+  template = file("${path.module}/container-definitions/kafka.tpl")
 }
 
 #data "template_file" "container_definition_mongotest" {

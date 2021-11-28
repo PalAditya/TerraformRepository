@@ -17,16 +17,14 @@
       ],
       "mountPoints": [
         {
-          "sourceVolume": "${volume_name}",
+          "sourceVolume": "kafka",
           "containerPath": "/kafka"
         }
       ],
       "environment": [
           {"name":"KAFKA_BROKER_ID","value":"1"},
-          {"name":"KAFKA_ZOOKEEPER_CONNECT","value":"localhost:2181"},
-          {"name":"KAFKA_ADVERTISED_LISTENERS","value":"PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092"},
-          {"name":"KAFKA_LISTENER_SECURITY_PROTOCOL_MAP","value":"PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT"},
-          {"name":"KAFKA_INTER_BROKER_LISTENER_NAME","value":"PLAINTEXT"},
+          {"name":"KAFKA_ZOOKEEPER_CONNECT","value":"10.0.240.167:2181"},
+          {"name":"KAFKA_ADVERTISED_LISTENERS","value":"PLAINTEXT://10.0.240.167:9092"},
           {"name":"KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR","value":"1"}
       ],
       "logConfiguration": {
