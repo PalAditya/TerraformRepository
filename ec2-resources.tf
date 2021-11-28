@@ -25,17 +25,17 @@ resource "aws_instance" "mongo-ecs-instance" {
   tags = var.tags
 }
 
-#resource "aws_instance" "kafka-ecs-instance" {
-#  ami                    = data.aws_ami.amazon-linux-2.id
-#  instance_type          = var.instance_type
-#  vpc_security_group_ids = [var.security_group_id]
-#  subnet_id              = var.subnet_id
-#  iam_instance_profile   = aws_iam_instance_profile.default.id
-#  user_data              = data.template_file.user-data.rendered
-#  key_name               = "ssh-key"
-#
-#  tags = var.tags
-#}
+resource "aws_instance" "kafka-ecs-instance" {
+  ami                    = data.aws_ami.amazon-linux-2.id
+  instance_type          = var.instance_type
+  vpc_security_group_ids = [var.security_group_id]
+  subnet_id              = var.subnet_id
+  iam_instance_profile   = aws_iam_instance_profile.default.id
+  user_data              = data.template_file.user-data.rendered
+  key_name               = "ssh-key"
+
+  tags = var.tags
+}
 
 data "template_file" "user-data" {
   template = file("${path.module}/templates/user-data.sh")
