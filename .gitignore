@@ -1,0 +1,8 @@
+examples/backend.tf
+examples/.terraform
+examples/.terraform.lock.hcl
+examples/terraform.tfstate*
+examples/mongo_cluster.tf
+
+#IDE
+.idea
